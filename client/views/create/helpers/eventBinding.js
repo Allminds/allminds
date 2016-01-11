@@ -113,8 +113,60 @@ App.eventBinding.enterAction = function (selectedNode) {
   return App.map.addNewNode(parent, "", dir, sibling);
 };
 
+App.eventBinding.addNewNodeToTreeStructure = function(){
+var selectedNode = App.map.getDataOfNodeWithClassNamesString(".node.selected");
+  // non root node
+  if (selectedNode.position) {
+    var newNode = {
+        name: "", position: selectedNode.position
+      };
+    newNode._id = mindMapService.addNode(newNode);
+    newNode.children = [];
+    selectedNode = App.findNodeObjectInTree(selectedNode.id, treeNode[0].treeLayout.root);
+    var parentNode =  App.findNodeObjectInTree(selectedNode.parentId, treeNode[0].treeLayout.root);
+    selectedNode.children.splice(selectedNode.index, 0, newNode);
+    App.updateObjectInTree(selectedNode.id, treeNode[0].treeLayout.root, selectedNode);
+
+    App.eventBinding.afterNewNodeAddition(newNode, selectedNode);
+    App.TreeStructureService.getInstance().updateTreeStructure(treeNode[0]._id, treeNode[0].treeLayout);
+  }
+  // root node
+  else{
+    var newNode = {
+            name: "", position: 'left'
+     };
+    newNode._id = mindMapService.addNode(newNode);
+    }
+  };
+
+var recExitFlag=false;
+
+App.updateObjectInTree = function(id, currentNode, updatedNode) {
+    var i,
+        currentChild,
+        result;
+    if (id == currentNode.id) {
+        return currentNode;
+    } else {
+        for (i = 0; i < currentNode.children.length; i += 1) {
+            currentChild = currentNode.children[i];
+            result = App.findNodeObjectInTree(id, currentChild, updatedNode);
+            if (result) {
+            if(recExitFlag==false){
+                result = updatedNode
+                console.log(result);
+                recExitFlag=true;
+                }
+                return result;
+            }
+        }
+        return false;
+    }
+};
+
 Mousetrap.bind('enter', function () {
-  App.eventBinding.newNodeAddAction(App.eventBinding.enterAction);
+//  App.eventBinding.newNodeAddAction(App.eventBinding.enterAction);
+    App.eventBinding.addNewNodeToTreeStructure();
   return false;
 });
 

@@ -23,12 +23,11 @@ var enableHelpLink = function () {
 };
 
   var treeTraverse = function(node){
-    console.log(node.id);
     var currNodeDetails = App.MindMapService.getInstance().getNodeDetails(node.id);
     node.position = currNodeDetails[0].position;
     node.name = currNodeDetails[0].name;
     if(node.children.length === 0){
-      return;
+      return node;
     }
     for (var i = 0; i < node.children.length; i++){
       treeTraverse(node.children[i]);
@@ -55,11 +54,19 @@ Template.create.rendered = function rendered() {
   App.setMapsCount();
 };
 
-
 var createTreeLayout = function(rootNodeId){
-  var treeNode = App.TreeStructureService.getInstance().getTreeStructure(rootNodeId);
-  var treeData = treeTraverse(treeNode[0].treeLayout.root);
-  update(treeData);
+  treeNode = App.TreeStructureService.getInstance().getTreeStructure(rootNodeId);
+  if(treeNode.length === 0){
+    var treeRootNode = new App.TreeStructureDTO(rootNodeId, null);
+//    var treeStructureId = App.TreeStructureService.getInstance().createTreeStructure(treeRootNode);
+//    treeNode = App.TreeStructureService.getInstance().getTreeStructure(rootNodeId);
+//    var treeRoot = new App.TreeNode(treeRootNode.rootNodeId, 'New Mindmap', null, null);
+//    treeNode[0].treeLayout.root = treeRoot;
+      treeNode.push(treeRootNode);
+  }
+  treeStructureData = treeTraverse(treeNode[0].treeLayout.root);
+  var retNode = App.findNodeObjectInTree("YrjMK4LyagCC7wWEr", treeNode[0].treeLayout.root);
+  update(treeStructureData);
 };
 
 

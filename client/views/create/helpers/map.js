@@ -75,3 +75,33 @@ App.map.getNodeDataWithNodeId = function (nodeId) {
 App.map.storeSourceNode = function (sourceNode) {
   App.map.sourceNode = App.cloneObject(sourceNode);
 };
+
+var recExitFlag=false;
+
+App.findNodeObjectInTree = function(id, currentNode) {
+    var i,
+        currentChild,
+        result;
+    if (id == currentNode.id) {
+        if(!currentNode.children)
+            currentNode.children = [];
+        return currentNode;
+    } else {
+    if(currentNode.children){
+        for (i = 0; i < currentNode.children.length; i += 1) {
+            currentChild = currentNode.children[i];
+            result = App.findNodeObjectInTree(id, currentChild);
+            if (result) {
+            if(recExitFlag==false){
+                result.parentId = currentNode.id;
+                result.index = i;
+                console.log(result);
+                recExitFlag=true;
+                }
+                return result;
+            }
+        }
+        }
+        return false;
+    }
+};
