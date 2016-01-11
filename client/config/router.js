@@ -11,6 +11,8 @@ Router.route('/create/:_id', {
 	template: "create",
 	waitOn: function () {
 		Meteor.subscribe("userdata");
+		Meteor.subscribe("treeStructure", function(){
+		});
 		return Meteor.subscribe("mindmap", this.params._id);
 	},
 	data: function () {
