@@ -4,8 +4,7 @@ App.nodeCutToPaste = null;
 App.isIndicatorActive = false;
 App.allDescendants = [];
 App.indexDescendants = 0;
-App.eventBinding.focusAfterDelete = function(removedNode, removedNodeIndex) {
-    console.log(removedNode);
+App.eventBinding.focusAfterDelete = function (removedNode, removedNodeIndex) {
     var parent = removedNode.parent,
         siblings = (App.Node.isRoot(parent) ? parent[removedNode.position] : parent.childSubTree) || [];
     var focusableNode = siblings[removedNodeIndex];
@@ -512,6 +511,7 @@ App.eventBinding.tabAction = function(selectedNode) {
 };
 
 Mousetrap.bind('tab', function() {
+    if(!App.editable) return false;
     App.eventBinding.newNodeAddAction(App.eventBinding.tabAction);
     App.clearAllSelected();
     return false;

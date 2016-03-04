@@ -35,10 +35,23 @@ Router.configure({layoutTemplate: 'main', notFoundTemplate: 'error_page'});
 
 
 Router.route('/', {
+<<<<<<< HEAD
 	name:'home',
 	template: 'home',
 	waitOn: function () {
 		return Meteor.subscribe("userdata", Meteor.userId());
+=======
+	onBeforeAction: function () {
+		var self = this;
+		if (!Meteor.user()) {
+			self.render("home");
+		}
+		else {
+			Meteor.subscribe("userdata", Meteor.userId());
+            Meteor.subscribe("myRootNodes", Meteor.user().services.google.email);
+			self.render("dashboard");
+		}
+>>>>>>> personalization-POPS
 	}
 });
 
@@ -47,7 +60,8 @@ Router.route('/create/:_id', {
 	template: "create",
 	waitOn: function () {
 		Meteor.subscribe("userdata");
-		return Meteor.subscribe("mindmap", this.params._id);
+		var user = Meteor.user() ? Meteor.user().services.google.email : "*";
+		return Meteor.subscribe("mindmap", this.params._id, user);
 	},
 	data: function () {
 		return {id: this.params._id, data: mindMapService.findTree(this.params._id)};
