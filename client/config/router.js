@@ -35,12 +35,10 @@ Router.configure({layoutTemplate: 'main', notFoundTemplate: 'error_page'});
 
 
 Router.route('/', {
-<<<<<<< HEAD
 	name:'home',
 	template: 'home',
 	waitOn: function () {
 		return Meteor.subscribe("userdata", Meteor.userId());
-=======
 	onBeforeAction: function () {
 		var self = this;
 		if (!Meteor.user()) {
@@ -51,7 +49,6 @@ Router.route('/', {
             Meteor.subscribe("myRootNodes", Meteor.user().services.google.email);
 			self.render("dashboard");
 		}
->>>>>>> personalization-POPS
 	}
 });
 
